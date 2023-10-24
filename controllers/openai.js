@@ -1,4 +1,6 @@
-//Llamar express.
+//Audio a Texto
+
+
 require('dotenv').config();
 const { response } = require("express");
 const { getDB } = require("../database/database");
