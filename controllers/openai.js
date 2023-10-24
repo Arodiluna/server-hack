@@ -2,7 +2,7 @@
 const { response } = require("express");
 const { getDB } = require("../database/database");
 
-const registro = async (req, res) => {
+const audio = async (req, res) => {
     try {
         const { email } = req.body;
 
@@ -30,5 +30,5 @@ const registro = async (req, res) => {
 
 
 module.exports = {
-    registro
+    audio
 }

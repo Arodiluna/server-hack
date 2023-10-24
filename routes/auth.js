@@ -8,11 +8,10 @@ const { validarCampos } = require('../middlewares/validar');
 const router = Router();
 
 
-//Llamar controladores.
+//Rutas openAI.
 
 
-//Rutas endpoints
-//Ruta insertar email.
+//Rutas auth.
 //Ruta insertar email.
 router.post('/email',
 [
