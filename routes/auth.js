@@ -12,12 +12,7 @@ const router = Router();
 
 
 //Rutas auth.
-//Ruta insertar email.
-router.post('/email',
-[
-  check('email', 'No es un email válido.').isEmail(),
-  validarCampos
-],
-registro);
+//Ruta insertar registro.
+router.post('/registro', registro);
 
 module.exports = router;
