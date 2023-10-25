@@ -2,8 +2,8 @@
 require('dotenv').config();
 const { response } = require("express");
 const { getDB } = require("../database/database");
-const { openAI } = require("openai")
-const { fs } = require("fs")
+const openAI = require("openai");
+const fs = require("fs");
 
 //Llamar api openAI.
 const openai = new openAI({
@@ -36,8 +36,6 @@ const audioFun = async (req, res) => {
         });
     }
 }
-
-
 
 module.exports = {
     audioFun
