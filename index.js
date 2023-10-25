@@ -4,6 +4,26 @@ const express = require('express');
 require('dotenv').config();
 //Crear app express.
 const app = express();
+//Socket.io
+const socketIO = require('socket.io');
+//Http.
+const http = require('http');
+//Server express.
+const server = http.createServer(app);
+//Crear socket.io a través del server.
+const io = socketIO(server, {
+    cors: {
+        origin: '*', // Cambia esto según tus necesidades de seguridad
+        methods: ['GET', 'POST']
+    }
+});
+
+//Abrir socket.
+io.on('connection', (socket) => {
+    console.log('Usuario conectado');
+    logic.socketConexion(socket, io);
+});
+
 //Cors.
 const cors = require('cors');
 
@@ -14,7 +34,7 @@ app.use( express.json() );
 app.use( cors() );
 
 //Escuchar peticiones.
-app.listen( process.env.PORT, () => {
+server.listen( process.env.PORT, () => {
     console.log(`Corriendo servidor en puerto ${ process.env.PORT }`);
 });
 
