@@ -21,14 +21,12 @@ const registro = async (req, res) => {
 
         //Hacer request de los datos enviados por JSON.
         var { pass } = req.body;
-        const { nombre, apellido_p, apellido_m, usuario, discapacidad, fecha_nacimiento, email } = req.body;
+        const { nombre, apellido_p, apellido_m, usuario, discapacidad, email } = req.body;
 
         //Array de datos que harán insert, se agregan fecha_creacion y verificado
         datos = {
-            nombre, apellido_p, apellido_m, usuario, discapacidad, fecha_nacimiento, email, pass, fecha_creacion
+            nombre, apellido_p, apellido_m, usuario, discapacidad, email, pass, fecha_creacion
         }
-
-        console.log(datos);
 
         //Encriptar contraseña.
         const salt = bcrypt.genSaltSync();
@@ -87,8 +85,6 @@ const login = async (req, res) => {
 
         //Extraer el numero de emails.
         const contador = search[0].count;
-
-        console.log(contador);
 
         //Válidar password.
        const searchpass = await conexion.query("SELECT pass FROM usuario WHERE email = ?", email);

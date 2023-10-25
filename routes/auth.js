@@ -22,7 +22,6 @@ check('apellido_p', 'El apellido paterno es obligatorio.').not().isEmpty().isLen
 check('apellido_m', 'El apellido materno es obligatorio.').not().isEmpty().isLength({ min: 1 }),
 check('usuario', 'El usuario es obligatorio.').not().isEmpty().isLength({ min: 1 }),
 check('discapacidad', 'La discapacidad es obligatorio.').not().isEmpty().isLength({ min: 1 }),
-check('fecha_nacimiento', 'La fecha de nacimiento es obligatorio.').not().isEmpty().isLength({ min: 1 }),
 check('email', 'No es un email válido.').isEmail(),
 check('pass', 'La contraseña postal es obligatorio.').not().isEmpty().isLength({ min: 1 }),
 validarCampos
