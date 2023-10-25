@@ -1,30 +1,38 @@
-//Audio a Texto
-
-
+//Librerías.
 require('dotenv').config();
 const { response } = require("express");
 const { getDB } = require("../database/database");
-const OpenAI=require("openai")
-const fs=require("fs")
-const openai=new OpenAI({
+const { openAI } = require("openai")
+const { fs } = require("fs")
+
+//Llamar api openAI.
+const openai = new openAI({
     apiKey: process.env.API_OPENAI
-})
+});
 
 const audioFun = async (req, res) => {
     try {
+
+        //Llamar audio.
         const { audio } = req.body;
-        const transcription=await openai.audio.transcriptions.create({
+
+        //Transcripción de audio.
+        const transcription = await openai.audio.transcriptions.create({
             file:fs.createReadStream("aud1.mp3"),
             model:"whisper-1"
-        })
+        });
+
+        //Mensaje transcribido.
         res.status(201).json({
             of: true,
             mensaje: transcription
         });
+
+        //Error.
     } catch (error) {
         res.status(500).json({
             of: false,
-            mensaje: "Hablar con un administrador, no se insertaron los datos en registro."
+            mensaje: "Error, hablar con un administrador."
         });
     }
 }

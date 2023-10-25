@@ -2,9 +2,10 @@
 const { Router } = require('express');
 //Express validator.
 const { check } = require('express-validator');
-const { registro } = require('../controllers/auth');
+const { registro, login, token } = require('../controllers/auth');
 const { validarCampos } = require('../middlewares/validar');
 const { audioFun } = require('../controllers/openai');
+const { validarJWT } = require('../middlewares/validar-jwt');
 //Ruta.
 const router = Router();
 
@@ -14,6 +15,30 @@ router.get('/audio', audioFun);
 
 //Rutas auth.
 //Ruta insertar registro.
-router.post('/registro', registro);
+router.post('/registro', 
+[
+check('nombre', 'El nombre es obligatorio.').not().isEmpty().isLength({ min: 1 }),
+check('apellido_p', 'El apellido paterno es obligatorio.').not().isEmpty().isLength({ min: 1 }),
+check('apellido_m', 'El apellido materno es obligatorio.').not().isEmpty().isLength({ min: 1 }),
+check('usuario', 'El usuario es obligatorio.').not().isEmpty().isLength({ min: 1 }),
+check('discapacidad', 'La discapacidad es obligatorio.').not().isEmpty().isLength({ min: 1 }),
+check('fecha_nacimiento', 'La fecha de nacimiento es obligatorio.').not().isEmpty().isLength({ min: 1 }),
+check('email', 'No es un email válido.').isEmail(),
+check('pass', 'La contraseña postal es obligatorio.').not().isEmpty().isLength({ min: 1 }),
+validarCampos
+], 
+registro);
+
+//Ruta login.
+router.post('/login', 
+[
+check('email', 'No es un email válido.').isEmail(),
+check('pass', 'La contraseña postal es obligatorio.').not().isEmpty().isLength({ min: 1 }),
+validarCampos
+], 
+login);
+
+//Renovar token.
+router.get('/token', validarJWT , token);
 
 module.exports = router;
