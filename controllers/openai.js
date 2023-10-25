@@ -4,11 +4,17 @@ const { response } = require("express");
 const { getDB } = require("../database/database");
 const openAI = require("openai");
 const fs = require("fs");
+const axios = require('axios');
+const record = require('node-record-lpcm16');
+
 
 //Llamar api openAI.
 const openai = new openAI({
     apiKey: process.env.API_OPENAI
 });
+
+
+  
 
 const audioFun = async (req, res) => {
     try {
