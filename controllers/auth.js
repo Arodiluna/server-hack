@@ -170,156 +170,6 @@ const token = async (req, res = response) => {
     }
 }
 
-//Subir audio.
-//Subir Comprobando constancia fiscal.
-const audio = async (req, res = response) => {
-
-    //Crear objeto amazon s3 web service.
-    const client = new S3Client({ region: process.env.AWS_REGION,
-        credentials: {
-            accessKeyId: process.env.AWS_ID,
-            secretAccessKey: process.env.AWS_SECRET
-        }
-    });
-
-    //Conexión base de datos.
-    const conexion = await getDB();
-
-    //Extraer id y nombre.
-    const { id_usuario } = req;
-
-    console.log(req.files.audio);
-
-    //Validación.
-    if ( !req.files ) {
-        return res.status(400).json({
-            ok: false,
-            msg: 'No se subió ningún archivo.'
-        });
-    }
-
-    //Nombre imagen por form data.
-    const file = req.files.imagen;
-
-    //Data de la imágen.
-    const data = req.files.imagen.data;
-    //Tipo de dato.
-    const mimetype = req.files.imagen.mimetype;
-
-
-    if (!file) {
-        return res.status(400).json({
-            ok: false,
-            msg: 'No se subió ningún archivo - pdf'
-        });
-    }
-
-    if ( !file.mimetype.includes('pdf') ) {
-        return res.status(400).json({
-            ok: false,
-            msg: 'El archivo no es un pdf'
-        });
-    }
-
-    try {
-
-        //Crear nombre archivo.
-        const nombreOriginal = file.name;
-        const nombreSplit = nombreOriginal.split('.');
-        const extension = nombreSplit[ nombreSplit.length - 1 ];
-        const id_unico = uniqid();
-        //Ruta carpeta ine.
-        const carpeta = `${ id_usuario }` + '/constancia-fiscal/';
-        //Nomre archivo.
-        const constancia_fiscal = `${ id_unico }.${ extension }`;
-        //Nombre ruta.
-        const ruta = carpeta + constancia_fiscal;
-
-
-         //Parametros bucket.
-        const params = {
-          Bucket: process.env.AWS_NAME,
-          Key: ruta, 
-          Body: data,
-          ContentType: mimetype
-        };
-
-         //Validar que exista el usuario.
-         const searchUser = await conexion.query("SELECT COUNT(id_usuario) as user FROM documentos WHERE id_usuario = ?", id_usuario);
-
-         //Extraer el numero de emails.
-         const user = searchUser[0].user;
- 
-         datos = {
-             id_usuario, constancia_fiscal
-         }
- 
-         if (user === 0) {
-                     //Insert.
-         await conexion.query("INSERT INTO documentos SET ?", datos);
- 
-         //Enviar los parametros.
-         const comando = new PutObjectCommand(params);
-         //Esperando al cliente.
-         await client.send(comando);
- 
-          res.json({
-              ok: true,
-              msg: 'Se inserto correctamente la imagen.',
-              file: file.mimetype
-          });
- 
-         }       
-
-        //Validar si existe la imagen.
-        const search = await conexion.query("SELECT COUNT(constancia_fiscal) as count FROM documentos WHERE id_usuario = ?", id_usuario);
-
-        //Extraer el numero de emails.
-        const contador = search[0].count;
-        
-
-        //Si no existe un INE en el ID usuario se hace el insert en AWS.
-        if (contador === 0) {
-
-        //Insert.
-        await conexion.query("UPDATE documentos SET constancia_fiscal = ? WHERE id_usuario = ?", [constancia_fiscal, id_usuario]);
-
-        //Enviar los parametros.
-        const comando = new PutObjectCommand(params);
-        //Esperando al cliente.
-        await client.send(comando);
-
-         res.json({
-             ok: true,
-             msg: 'Se inserto correctamente la constancia fiscal.',
-             file: file.mimetype
-         });
-         
-         //Actualizar nombre imagen en base de datos.
-        } else if (contador === 1) {
-
-        await conexion.query("UPDATE documentos SET constancia_fiscal = ? WHERE id_usuario = ?", [constancia_fiscal, id_usuario]);
-
-        //Enviar los parametros.
-        const comando = new PutObjectCommand(params);
-        //Esperando al cliente.
-        await client.send(comando);
-
-        res.json({
-            ok: true,
-            msg: 'Se actualizo la constancia fiscal correctamente.',
-            file: file.mimetype
-        });
-    }
-
-    } catch (error) {
-
-        res.status(500).json({
-            ok: false,
-            msg: 'Error, hablar con el administrador.'
-        });
-    }
-}
 
 //OpenAI
 //Validar token.
@@ -350,10 +200,31 @@ const chatgpt = async (req, res = response) => {
     }
 }
 
+//Select ver estudiantes en la sala.
+//Función ver Estudiantes.
+//Ver información de un único usuarios.
+const verEstudiante = async (req, res) => {
+    try {
+        const { id_usuario } = req.params;
+        const conexion = await getDB();
+        const query = await conexion.query(`CALL eliminado_id(${id_usuario})`);
+        res.status(200).json({
+            ok: true,
+            query
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            mensaje: "Error, favor de hablar con el administrador."
+        });
+    }
+}
+
 module.exports = {
     registro,
     login,
     token,
-    audio,
-    chatgpt
+    chatgpt,
+    verEstudiantes
 }
