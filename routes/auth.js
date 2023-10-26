@@ -2,7 +2,7 @@
 const { Router } = require('express');
 //Express validator.
 const { check } = require('express-validator');
-const { registro, login, token, chatgpt, verEstudiante, insertMaestro, gptimage } = require('../controllers/auth');
+const { registro, login, token, chatgpt, verEstudiante, insertMaestro, gptimage, verPerfil } = require('../controllers/auth');
 const { validarCampos } = require('../middlewares/validar');
 const { audioFun } = require('../controllers/openai');
 const { validarJWT } = require('../middlewares/validar-jwt');
@@ -51,5 +51,8 @@ router.post('/maestro/insert', validarJWT, insertMaestro);
 
 //Insert maestro.
 router.post('/gpt/image', validarJWT, gptimage);
+
+//Ver perfil
+router.get('/perfil', validarJWT, verPerfil);
 
 module.exports = router;

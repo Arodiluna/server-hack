@@ -326,6 +326,29 @@ const insertMaestro = async (req, res) => {
     }
 }
 
+//Unirse al salón.
+const verPerfil = async (req, res) => {
+    try {
+        const { id_usuario } = req;
+        const conexion = await getDB();
+        const query = await conexion.query('SELECT id_usuario, nombre, apellido_p, apellido_m, usuario, discapacidad, email, fecha_creacion FROM usuario WHERE id_usuario = ?', id_usuario);
+
+        const valor = query[0];
+
+        res.status(200).json({
+            ok: true,
+            query: valor
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            mensaje: "Error, favor de hablar con el administrador."
+        });
+    }
+}
+
+
 module.exports = {
     registro,
     login,
@@ -333,5 +356,6 @@ module.exports = {
     chatgpt,
     gptimage,
     verEstudiante,
-    insertMaestro
+    insertMaestro,
+    verPerfil
 }
