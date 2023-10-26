@@ -205,12 +205,94 @@ const chatgpt = async (req, res = response) => {
 //Ver información de un único usuarios.
 const verEstudiante = async (req, res) => {
     try {
-        const { id_usuario } = req.params;
+        const { id_usuario } = req;
         const conexion = await getDB();
-        const query = await conexion.query(`CALL eliminado_id(${id_usuario})`);
+        const query = await conexion.query(`CALL alumnosxmaestro(${id_usuario})`);
+
+        const valor = query[0];
+
         res.status(200).json({
             ok: true,
-            query
+            query: valor
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            mensaje: "Error, favor de hablar con el administrador."
+        });
+    }
+}
+
+
+//Crear código.
+const codigo = async (req, res) => {
+    try {
+        const { id_usuario } = req;
+
+        const conexion = await getDB();
+
+        const query = await conexion.query(`CALL alumnosxmaestro(${id_usuario})`);
+
+        const valor = query[0];
+
+        res.status(200).json({
+            ok: true,
+            query: valor
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            mensaje: "Error, favor de hablar con el administrador."
+        });
+    }
+}
+
+//Unirse al salón.
+const unirse = async (req, res) => {
+    try {
+        const { id_usuario } = req.body;
+        const conexion = await getDB();
+        const query = await conexion.query(`CALL alumnosxmaestro(${id_usuario})`);
+
+        const valor = query[0];
+
+        res.status(200).json({
+            ok: true,
+            query: valor
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            mensaje: "Error, favor de hablar con el administrador."
+        });
+    }
+}
+
+//Insert maestro.
+//Crear código.
+const insertMaestro = async (req, res) => {
+    try {
+        const { id_usuario, nombre } = req;
+
+
+        const id_maestro = id_usuario;
+
+        const rol = 1;
+
+        maestro = {
+            id_maestro, nombre, rol
+        }
+
+        const conexion = await getDB();
+
+        const query = await conexion.query('INSERT INTO maestro SET ?', maestro);
+
+        res.status(200).json({
+            ok: true,
+            msg: 'Se insertó correctamente'
         });
 
     } catch (error) {
@@ -226,5 +308,6 @@ module.exports = {
     login,
     token,
     chatgpt,
-    verEstudiantes
+    verEstudiante,
+    insertMaestro
 }
