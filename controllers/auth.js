@@ -200,6 +200,29 @@ const chatgpt = async (req, res = response) => {
     }
 }
 
+//Validar token.
+const gptimage = async (req, res = response) => {
+
+    //Extraer id y nombre.
+    const { mensaje } = req.body;
+
+    try {
+
+        const image = await openai.images.generate({ prompt: mensaje });
+
+        res.status(200).json({
+            ok: true,
+            url: image.data
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            mensaje: "Error renew token, favor de hablar con el administrador."
+        });
+    }
+}
+
 //Select ver estudiantes en la sala.
 //Función ver Estudiantes.
 //Ver información de un único usuarios.
@@ -308,6 +331,7 @@ module.exports = {
     login,
     token,
     chatgpt,
+    gptimage,
     verEstudiante,
     insertMaestro
 }
