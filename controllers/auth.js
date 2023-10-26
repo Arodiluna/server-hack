@@ -208,7 +208,7 @@ const gptimage = async (req, res = response) => {
 
     try {
 
-        const image = await openai.images.generate({ prompt: mensaje });
+        const image = await openai.images.generate({ prompt: mensaje, size: "256x256" });
 
         res.status(200).json({
             ok: true,
